@@ -1,13 +1,21 @@
-from flask import Flask, request, render_template 
+"""server.py."""
+from flask import Flask, request, render_template
 import EmotionDetection
 
 app = Flask(__name__)
 
-@app.route("/") 
+@app.route("/")
 def home():
-    return render_template('index.html') 
+    """home"""
+    return render_template('index.html')
 
 @app.route("/emotionDetector", methods = ["GET"])
 def emotions():
+    """emotions"""
     query = request.args["textToAnalyze"]
-    return EmotionDetection.emotion_detection.emotion_detector(query)
+    response = EmotionDetection.emotion_detection.emotion_detector(query)
+
+    if response["dominant_emotion"] == "None":
+        return "Invalid text! Please try again!"
+
+    return response
